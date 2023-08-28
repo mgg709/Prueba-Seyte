@@ -1,0 +1,17 @@
+html{
+  box-sizing: border-box;
+  margin: 0;
+  padding:0;
+}
+
+*,
+*:after,
+*:before{
+  box-sizing:inherit;
+  font-family:inherit;
+}
+
+body{
+  margin:0;
+  font-family: 'Roboto', sans-serif;
+}
