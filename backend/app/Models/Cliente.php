@@ -12,7 +12,10 @@ class Cliente extends Model
 
   protected $primaryKey = 'codigo';
 
+  public $incrementing = true;
+
   protected $fillable = [
+    'codigo',
     'razon_social',
     'cif',
     'direccion',
