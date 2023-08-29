@@ -3,8 +3,8 @@
 
     <h1>SISTEMA DE GESTIÓN DE RIEGO</h1>
     <span>Buscador</span>
-
-    <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/>
+    <SearchInput />
+   
 
     <table class="clients-table">
       <thead>
@@ -16,7 +16,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="cliente in clientes.slice(inicio, fin)" :key="cliente.id">
+        <tr v-for="cliente in clientes.slice(inicio, fin)" :key="cliente.codigo">
           <td>{{ cliente.codigo }}</td>
           <td>{{ cliente.razon_social }}</td>
           <td>{{ cliente.cif }}</td>
@@ -24,12 +24,14 @@
         </tr>
       </tbody>
     </table>
+     <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/>
   </div>
 </template>
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import TablePaginated from '../components/TablePaginated.vue';
 import axios from 'axios';
+import SearchInput from '../components/SearchInput.vue';
 
 const clienteXpage = 10;
 const inicio = ref(0);
@@ -51,7 +53,6 @@ const previous = () => {
 async function getData(){
   const { data } = await axios.get('http://localhost/api/clientes'); 
   clientes.value = data;
-  console.log(clientes.value);
 }
 
 onMounted(getData);
