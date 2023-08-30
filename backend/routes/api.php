@@ -21,8 +21,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
   return $request->user();
 });
 Route::get('clientes', [ClienteController::class, 'index'])->name('clientes.index');
+Route::get('clientes/search', [ClienteController::class, 'indexBySearch'])->name('clientes.indexBySearch');
+Route::get('clientes/{codigo}', [ClienteController::class, 'indexByCodigo'])->name('clientes.indexByCodigo');
 Route::post('clientes/register', [ClienteController::class, 'register'])->name('clientes.register');
-Route::delete('clientes/delete/{id}', [ClienteController::class, 'delete'])->name('clientes.delete');
+Route::delete('clientes/delete/{codigo}', [ClienteController::class, 'destroy'])->name('clientes.delete');
 Route::put('clientes/update/{id}', [ClienteController::class, 'update'])->name('clientes.update');
 
 Route::get('programadores', [ProgramadorController::class, 'index'])->name('programadores.index');

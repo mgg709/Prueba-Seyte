@@ -14,9 +14,36 @@ class ClienteController extends Controller
     return Cliente::all();
   }
 
+  public function indexBySearch(Request $request)
+  {
+    if ($request->razon) {
+      $razon = $request->razon;
+      return Cliente::where('razon_social', 'like', '%' . $razon . '%')->get();
+    }
+    if ($request->municipio) {
+      $municipio = $request->municipio;
+      return Cliente::where('municipio', 'like', '%' . $municipio . '%')->get();
+    }
+    return response()->json('No se ha encontrado ningún cliente', 201);
+  }
+
+  public function indexByCodigo($codigo)
+  {
+    return Cliente::where('codigo', $codigo)->get();
+  }
+
   public function register(Request $request)
   {
-    $client = Cliente::create($request->all());
+    $attributes = request()->validate([
+      'razon_social' => 'required',
+      'cif' => 'required',
+      'direccion' => 'required',
+      'municipio' => 'required',
+      'provincia' => 'required',
+      'fecha_inicio' => 'required',
+      'fecha_expiracion' => 'required'
+    ]);
+    $client = Cliente::create($attributes);
     return response()->json($client, 201);
   }
 
@@ -28,13 +55,12 @@ class ClienteController extends Controller
     return response()->json($client, 201);
   }
 
-  public function destroy($id)
+  public function destroy($codigo)
   {
-
-    $client = Cliente::findOrFail($id);
-    $programadores = $client->programadores();
-    $programadores->sensores()->detach();
-    $programadores->detach();
+    $client = Cliente::findOrFail($codigo);
+    // $programadores = $client->programadores();
+    // $programadores->sensores()->detach();
+    // $programadores->detach();
     $client->delete();
     return response()->json('Eliminado con éxito', 201);
   }
