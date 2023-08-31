@@ -13,7 +13,7 @@ class ClienteController extends Controller
   {
     return Cliente::all();
   }
-
+  //TODO: Bug en el que si buscas con el campo vacio, te peta
   public function indexBySearch(Request $request)
   {
     if ($request->razon) {
