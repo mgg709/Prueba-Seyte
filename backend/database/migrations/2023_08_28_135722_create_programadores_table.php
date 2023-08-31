@@ -16,6 +16,8 @@ return new class extends Migration
       $table->enum('modelo', ['A', 'B', 'C']);
       $table->date('fecha_alta');
       $table->date('fecha_ultima_conexion');
+      $table->integer('clientes_codigo');
+      $table->foreign('clientes_codigo')->references('codigo')->on('clientes')->onDelete('cascade');
       $table->timestamps();
     });
   }

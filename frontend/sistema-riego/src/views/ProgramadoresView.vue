@@ -1,9 +1,9 @@
 <template>
   <div class="programadores-content">
     <h1>Cliente</h1>
-    <form action="POST" class="client-form">
+    <form class="client-form">
       <label for="razon">Razón social</label>
-      <input type="text" name="razon" id="razon" v-model="client.razon_social">
+      <input type="text" name="razon" id="" v-model="client.razon_social">
       <label for="cif">CIF</label>
       <input type="text" name="cif" id="cif" v-model="client.cif">
       <label for="direccion">Dirección</label>
@@ -13,9 +13,9 @@
       <label for="provincia">Provincia</label>
       <input type="text" name="provincia" id="provincia" v-model="client.provincia">
       <label for="fecha-inicio">Fecha de inicio del contrato</label>
-      <input type="date" name="fecha-inicio" id="fecha-inicio" v-model="client.fechaInicio">
+      <input type="date" name="fecha-inicio" id="fecha-inicio" v-model="client.fecha_inicio">
       <label for="fecha-fin">Fecha de fin del contrato</label>
-      <input type="date" name="fecha-fin" id="fecha-fin" v-model="client.fechaFin">
+      <input type="date" name="fecha-fin" id="fecha-fin" v-model="client.fecha_expiracion">
     </form>
   <span>Buscador</span>
    <!-- <div class="search-bar">
@@ -27,7 +27,7 @@
       <input type="checkbox" id="municipio" name="municipio" v-model="municipio">
     </div> -->
 
-    <!-- <table class="clients-table">
+    <table class="clients-table">
       <thead>
         <tr>
           <th>Id</th>
@@ -41,7 +41,7 @@
           
         </tr>
       </tbody>
-    </table> -->
+    </table>
      <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/>
      </div>
 </template>
@@ -52,35 +52,17 @@ import axios from 'axios';
 import { useRoute } from 'vue-router';
 
 
-const client = ref({
-});
-const programadorXpage = 10;
-const inicio = ref(0);
-const fin = ref(programadorXpage);
-const programadores = ref([]);
-let maxLength = computed(() => programadores.value.length);
+const client = ref({});
 const route = useRoute();
-
-const next = () => {
-  inicio.value += programadorXpage;
-  fin.value += programadorXpage;
-}
-
-const previous = () => {
-  inicio.value -= programadorXpage;
-  fin.value -= programadorXpage;
-}
-
 async function getClient(){
-  const { data } = await axios.get(`http://localhost/api/clientes/${route.params.codigo}`);
-  client.value = data;
-  console.log(client.value);
+  const {data} = await axios.get(`http://localhost/api/clientes/${route.params.codigo}`);
+  client.value = data[0];
 }
-onBeforeMount(async () => {
+onBeforeMount(() => {
   getClient();
 });
 </script>
-<style>
+<style scoped>
 .programadores-content{
   display: flex;
   flex-direction: column;
@@ -131,4 +113,12 @@ a{
   color: black;
 }
 
+input[type="text"],
+input[type="date"]{
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+label{
+  margin-bottom: 5px;
+}
 </style>

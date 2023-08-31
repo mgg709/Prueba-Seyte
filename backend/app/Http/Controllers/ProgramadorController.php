@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 class ProgramadorController extends Controller
 {
   //
-  public function index()
+  public function index($request)
   {
-    return Programador::all();
+    $codigo = $request->razon;
+    return Cliente::where('razon_social', 'like', '%' . $razon . '%')->get();
+  }
   }
 
   public function register(Request $request)
