@@ -58,6 +58,7 @@ let maxLength = computed(() => clientes.value.length);
 const busqueda = ref('');
 const razon = ref(true);
 const municipio = ref(false);
+const loading = ref(false);
 
 const next = () => {
   inicio.value += clienteXpage;
@@ -93,13 +94,13 @@ watch(municipio, (value) => {
 });
 
 async function search() {
-  if (razon.value === true) {
+  if (razon.value === true && busqueda.value !== '') {
     console.log(razon.value)
     console.log(busqueda.value)
     const { data } = await axios.get(`http://localhost/api/clientes/search?razon=${busqueda.value}`);
     clientes.value = data;
     console.log(data);
-  } else if (municipio.value === true) {
+  } else if (municipio.value === true && busqueda.value !== '') {
     console.log('municipio')
     const { data } = await axios.get(`http://localhost/api/clientes/search?municipio=${busqueda.value}`);
     clientes.value = data;
