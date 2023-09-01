@@ -40,7 +40,7 @@
         </tr>
       </tbody>
     </table>
-    <RouterLink to="/anadir/cliente"><button class="btn-add-client">Añadir Cliente</button></RouterLink>
+    <RouterLink to="/anadir/cliente"><NormalButton :buttonLabel="'Añadir cliente'"></NormalButton></RouterLink>
     <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/>
   </div>
 </template>
@@ -49,6 +49,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import TablePaginated from '../components/TablePaginated.vue';
 import axios from 'axios';
 import { RouterLink } from 'vue-router';
+import NormalButton from '../components/NormalButton.vue';
 
 const clienteXpage = 10;
 const inicio = ref(0);

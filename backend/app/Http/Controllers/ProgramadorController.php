@@ -10,13 +10,18 @@ class ProgramadorController extends Controller
   //
   public function index($request)
   {
-    $codigo = $request->razon;
-    return Cliente::where('razon_social', 'like', '%' . $razon . '%')->get();
-  }
+    $codigo = $request->codigo;
+    return Programador::where('clientes_codigo', $codigo)->get();
   }
 
   public function register(Request $request)
   {
+    $attributes = request()->validate([
+      'modelo' => 'required',
+      'fecha_alta' => 'required',
+      'fecha_ultima_conexion' => 'required',
+      'clientes_codigo' => 'required'
+    ]);
     $programador = Programador::create($request->all());
     return response()->json($programador, 201);
   }

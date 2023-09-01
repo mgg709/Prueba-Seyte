@@ -14,9 +14,11 @@ class Programador extends Model
   protected $primaryKey = 'numero_serie';
 
   protected $fillable = [
+    'numero_serie',
     'modelo',
     'fecha_alta',
-    'fecha_ultima_conexion'
+    'fecha_ultima_conexion',
+    'clientes_codigo'
   ];
 
   public function cliente(): BelongsTo

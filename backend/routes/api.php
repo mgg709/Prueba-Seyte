@@ -25,7 +25,7 @@ Route::get('clientes/search', [ClienteController::class, 'indexBySearch'])->name
 Route::get('clientes/{codigo}', [ClienteController::class, 'indexByCodigo'])->name('clientes.indexByCodigo');
 Route::post('clientes/register', [ClienteController::class, 'register'])->name('clientes.register');
 Route::delete('clientes/delete/{codigo}', [ClienteController::class, 'destroy'])->name('clientes.delete');
-Route::put('clientes/update/{id}', [ClienteController::class, 'update'])->name('clientes.update');
+Route::put('clientes/update/{codigo}', [ClienteController::class, 'update'])->name('clientes.update');
 
 Route::get('programadores', [ProgramadorController::class, 'index'])->name('programadores.index');
 Route::post('programadores/register', [ProgramadorController::class, 'register'])->name('programadores.register');

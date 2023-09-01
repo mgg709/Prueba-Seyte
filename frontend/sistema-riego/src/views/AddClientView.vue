@@ -57,8 +57,6 @@ async function register() {
 }
   console.log(client);
   const { data } = await axios.post('http://localhost/api/clientes/register',client );
-
-
   router.push('/');
 }
 </script>

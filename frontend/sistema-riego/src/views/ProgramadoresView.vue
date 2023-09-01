@@ -17,6 +17,7 @@
       <label for="fecha-fin">Fecha de fin del contrato</label>
       <input type="date" name="fecha-fin" id="fecha-fin" v-model="client.fecha_expiracion">
     </form>
+    <NormalButton :buttonLabel="'Guardar cambios'" @click="saveClient"></NormalButton>
   <span>Buscador</span>
    <!-- <div class="search-bar">
        <input id="search" type="search" placeholder="Search..." class="searcher" v-model="busqueda"/>
@@ -27,7 +28,7 @@
       <input type="checkbox" id="municipio" name="municipio" v-model="municipio">
     </div> -->
 
-    <table class="clients-table">
+    <!-- <table class="clients-table">
       <thead>
         <tr>
           <th>Id</th>
@@ -42,7 +43,7 @@
         </tr>
       </tbody>
     </table>
-     <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/>
+     <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/> -->
      </div>
 </template>
 <script setup>
@@ -50,10 +51,12 @@ import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import TablePaginated from '../components/TablePaginated.vue';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
+import NormalButton from '../components/NormalButton.vue';
 
 
 const client = ref({});
 const route = useRoute();
+const router = useRouter();
 async function getClient(){
   const {data} = await axios.get(`http://localhost/api/clientes/${route.params.codigo}`);
   client.value = data[0];
@@ -61,6 +64,11 @@ async function getClient(){
 onBeforeMount(() => {
   getClient();
 });
+
+async function saveClient() {
+  const {data} = await axios.put(`http://localhost/api/clientes/update/${route.params.codigo}`, client.value);
+  router.push('/');
+}
 </script>
 <style scoped>
 .programadores-content{

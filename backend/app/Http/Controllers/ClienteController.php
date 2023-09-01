@@ -47,11 +47,19 @@ class ClienteController extends Controller
     return response()->json($client, 201);
   }
 
-  public function update(Request $request, $id)
+  public function update(Request $request, $codigo)
   {
-    $client = Cliente::findOrFail($id);
-
-    $client->update($request);
+    $client = Cliente::findOrFail($codigo);
+    $attributes = $request->validate([
+      'razon_social' => 'required',
+      'cif' => 'required',
+      'direccion' => 'required',
+      'municipio' => 'required',
+      'provincia' => 'required',
+      'fecha_inicio' => 'required',
+      'fecha_expiracion' => 'required'
+    ]);
+    $client->update($attributes);
     return response()->json($client, 201);
   }
 
