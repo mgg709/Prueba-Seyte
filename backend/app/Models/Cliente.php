@@ -27,6 +27,6 @@ class Cliente extends Model
 
   public function programadores(): HasMany
   {
-    return $this->hasMany(Programador::class, 'codigo');
+    return $this->hasMany(Programador::class, 'clientes_codigo');
   }
 }

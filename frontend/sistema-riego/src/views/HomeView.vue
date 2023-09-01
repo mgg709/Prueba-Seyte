@@ -27,8 +27,8 @@
       </thead>
       <tbody>
         <tr v-for="cliente in clientes.slice(inicio, fin)" :key="cliente.codigo">
-          <RouterLink :to="`/programadores/${cliente.codigo}`">
-          <td>{{ cliente.codigo }}</td></RouterLink>
+          
+          <td><RouterLink :to="`/programadores/${cliente.codigo}`">{{ cliente.codigo }}</RouterLink></td>
           <td>{{ cliente.razon_social }}</td>
           <td>{{ cliente.cif }}</td>
           <td>{{ cliente.direccion }}</td>

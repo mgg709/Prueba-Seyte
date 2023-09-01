@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Programador;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
+use App\Models\Sensor;
 
 class ProgramadorController extends Controller
 {
@@ -44,6 +45,13 @@ class ProgramadorController extends Controller
       'numero_serie' => 'required|unique:programadores'
     ]);
     $programador = Programador::create($attributes);
+    $sensores = ['S1', 'S2', 'S3', 'S4'];
+    foreach ($sensores as $sonda) {
+      Sensor::create([
+        'sonda' => $sonda,
+        'programadores_numero_serie' => $request->numero_serie
+      ]);
+    }
     return response()->json($programador, 201);
   }
 

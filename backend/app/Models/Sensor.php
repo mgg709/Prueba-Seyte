@@ -10,10 +10,13 @@ class Sensor extends Model
 {
   use HasFactory;
 
+  protected $table = 'sensores';
+
   protected $fillable = [
-    'nombre',
+    'sonda',
     'fecha_medida',
-    'valor'
+    'valor',
+    'programadores_numero_serie'
   ];
 
   public function programador(): BelongsTo

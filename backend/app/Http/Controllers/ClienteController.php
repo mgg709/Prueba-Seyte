@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cliente;
+use App\Models\Programador;
 
 class ClienteController extends Controller
 {
@@ -64,9 +65,9 @@ class ClienteController extends Controller
   public function destroy($codigo)
   {
     $client = Cliente::findOrFail($codigo);
-    $programadores = $client->programadores();
+    $programadores_numero_serie = $client->programadores()->pluck('numero_serie');
     // $programadores->sensores()->detach();
-    $programadores->delete();
+    Programador::whereIn('numero_serie', $programadores_numero_serie)->delete();
     $client->delete();
     return response()->json('Eliminado con éxito', 201);
   }

@@ -29,7 +29,7 @@ const router = createRouter({
       component: AddProgramadorView
     },
     {
-      path: '/sensores/:numero-serie',
+      path: '/sensores/:numero_serie',
       name: 'sensores',
       component: SensoresView
     }

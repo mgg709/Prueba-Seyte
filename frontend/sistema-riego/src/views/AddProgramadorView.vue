@@ -30,8 +30,11 @@ const fecha_conexion = new Date();
 const ano = fecha_conexion.getFullYear();
 const mes = (fecha_conexion.getMonth() + 1).toString();
 const dia = fecha_conexion.getDate().toString();
+const hora = fecha_conexion.getHours().toString();
+const minutos = fecha_conexion.getMinutes().toString();
+const segundos = fecha_conexion.getSeconds().toString();
 
-let fecha_ultima_conexion = ano + '-' + mes + '-' + dia;
+let fecha_ultima_conexion = ano + '-' + mes + '-' + dia + ' ' + hora + ':' + minutos + ':' + segundos;
 
 const route = useRoute();
 const router = useRouter();

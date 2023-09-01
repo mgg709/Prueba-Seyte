@@ -49,7 +49,7 @@
       <tbody>
         <tr v-for="programador in programadores.slice(inicio, fin)" :key="programador.numero_serie">
           <td>{{ programador.modelo }}</td>
-          <RouterLink :to="`/sensores/${programador.numero_serie}`"><td>{{ programador.numero_serie }}</td></RouterLink>
+          <td><RouterLink :to="`/sensores/${programador.numero_serie}`">{{ programador.numero_serie }}</RouterLink></td>
           <td>{{ programador.fecha_alta }}</td>
           <td>{{ programador.fecha_ultima_conexion }}</td>
           <td><button @click="deleteProgramador(programador)" class="btn-delete-programador">Eliminar</button></td>

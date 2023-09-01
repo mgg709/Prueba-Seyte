@@ -13,9 +13,11 @@ return new class extends Migration
   {
     Schema::create('sensores', function (Blueprint $table) {
       $table->id();
-      $table->enum('nombre', ['S1', 'S2', 'S3', 'S4']);
-      $table->dateTime('fecha_medida');
-      $table->float('valor');
+      $table->enum('sonda', ['S1', 'S2', 'S3', 'S4']);
+      $table->dateTime('fecha_medida')->nullable();
+      $table->float('valor')->nullable();
+      $table->integer('programadores_numero_serie');
+      $table->foreign('programadores_numero_serie')->references('numero_serie')->on('programadores')->onDelete('cascade');
       $table->timestamps();
     });
   }

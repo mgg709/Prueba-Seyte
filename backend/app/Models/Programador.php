@@ -23,7 +23,7 @@ class Programador extends Model
 
   public function cliente(): BelongsTo
   {
-    return $this->belongsTo(Cliente::class, 'codigo');
+    return $this->belongsTo(Cliente::class, 'clientes_codigo');
   }
 
   public function sensores(): HasMany
