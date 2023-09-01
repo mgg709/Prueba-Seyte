@@ -72,7 +72,6 @@ async function register() {
     display: flex;
     align-items: center;
     flex-direction: column;
-
   }
 
   .create-client{

@@ -17,12 +17,10 @@ class ClienteController extends Controller
   public function indexBySearch(Request $request)
   {
     if ($request->razon) {
-      $razon = $request->razon;
-      return Cliente::where('razon_social', 'like', '%' . $razon . '%')->get();
+      return Cliente::where('razon_social', 'like', '%' . $request->razon . '%')->get();
     }
     if ($request->municipio) {
-      $municipio = $request->municipio;
-      return Cliente::where('municipio', 'like', '%' . $municipio . '%')->get();
+      return Cliente::where('municipio', 'like', '%' . $request->municipio . '%')->get();
     }
     return response()->json('No se ha encontrado ningún cliente', 201);
   }
@@ -66,9 +64,9 @@ class ClienteController extends Controller
   public function destroy($codigo)
   {
     $client = Cliente::findOrFail($codigo);
-    // $programadores = $client->programadores();
+    $programadores = $client->programadores();
     // $programadores->sensores()->detach();
-    // $programadores->detach();
+    $programadores->delete();
     $client->delete();
     return response()->json('Eliminado con éxito', 201);
   }

@@ -13,7 +13,6 @@ button{
   border: none;
   background-color: #009879;
   color: white;
-  margin-bottom: 20px;
   transition: all 0.5s;
 }
 

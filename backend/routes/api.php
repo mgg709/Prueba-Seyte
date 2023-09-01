@@ -28,9 +28,10 @@ Route::delete('clientes/delete/{codigo}', [ClienteController::class, 'destroy'])
 Route::put('clientes/update/{codigo}', [ClienteController::class, 'update'])->name('clientes.update');
 
 Route::get('programadores', [ProgramadorController::class, 'index'])->name('programadores.index');
+Route::get('programadores/filter', [ProgramadorController::class, 'indexByFilter'])->name('programadores.indexByFilter');
 Route::post('programadores/register', [ProgramadorController::class, 'register'])->name('programadores.register');
-Route::delete('programadores/delete/{id}', [ProgramadorController::class, 'delete'])->name('programadores.delete');
-Route::put('programadores/update/{id}', [ProgramadorController::class, 'update'])->name('programadores.update');
+Route::delete('programadores/delete/{numero_serie}', [ProgramadorController::class, 'destroy'])->name('programadores.delete');
+Route::put('programadores/update/{numero_serie}', [ProgramadorController::class, 'update'])->name('programadores.update');
 
 Route::get('sensores', [SensorController::class, 'index'])->name('sensores.index');
 Route::post('sensores/register', [SensorController::class, 'register'])->name('sensores.register');

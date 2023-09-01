@@ -12,7 +12,7 @@ class Programador extends Model
   use HasFactory;
 
   protected $primaryKey = 'numero_serie';
-
+  protected $table = 'programadores';
   protected $fillable = [
     'numero_serie',
     'modelo',
