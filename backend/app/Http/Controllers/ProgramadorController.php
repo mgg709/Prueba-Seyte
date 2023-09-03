@@ -58,14 +58,6 @@ class ProgramadorController extends Controller
     return response()->json($programador, 201);
   }
 
-  public function update(Request $request, $id)
-  {
-    $programador = Programador::findOrFail($id);
-
-    $programador->update($request);
-    return response()->json($programador, 201);
-  }
-
   public function destroy($numero_serie)
   {
     $programador = Programador::findOrFail($numero_serie);
