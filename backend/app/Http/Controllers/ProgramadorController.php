@@ -6,6 +6,7 @@ use App\Models\Programador;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Sensor;
+use Illuminate\Database\DBAL\TimestampType;
 
 class ProgramadorController extends Controller
 {
@@ -49,6 +50,8 @@ class ProgramadorController extends Controller
     foreach ($sensores as $sonda) {
       Sensor::create([
         'sonda' => $sonda,
+        'fecha_medida' => now(),
+        'valor' => rand(0, 100),
         'programadores_numero_serie' => $request->numero_serie
       ]);
     }

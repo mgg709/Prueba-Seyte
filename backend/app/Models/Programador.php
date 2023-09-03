@@ -28,6 +28,6 @@ class Programador extends Model
 
   public function sensores(): HasMany
   {
-    return $this->hasMany(Sensor::class, 'numero_serie');
+    return $this->hasMany(Sensor::class, 'programadores_numero_serie');
   }
 }

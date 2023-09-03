@@ -13,15 +13,16 @@
       <label for="fecha-alta">Fecha de alta</label>
       <input type="date" name="fecha-alta" id="fecha-alta" v-model="fecha_alta">
     </form>
+    <Spinner v-if="loading"/>
     <NormalButton class="btn-programador-form" :buttonLabel="'Añadir programador'" @click="registerProgramador"></NormalButton>
-    </div>
+  </div>
 </template>
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import NormalButton from '../components/NormalButton.vue';
-
+import Spinner from '../components/Spinner.vue';
 
 const model = ref('');
 const numero_serie = ref(0);
@@ -33,6 +34,7 @@ const dia = fecha_conexion.getDate().toString();
 const hora = fecha_conexion.getHours().toString();
 const minutos = fecha_conexion.getMinutes().toString();
 const segundos = fecha_conexion.getSeconds().toString();
+const loading = ref(false);
 
 let fecha_ultima_conexion = ano + '-' + mes + '-' + dia + ' ' + hora + ':' + minutos + ':' + segundos;
 
@@ -47,6 +49,7 @@ let programador = {
 }
 
 async function registerProgramador() {
+  loading.value = true;
   programador = {
     modelo: model.value,
     numero_serie: numero_serie.value,
@@ -55,6 +58,7 @@ async function registerProgramador() {
     clientes_codigo: route.params.codigo
   }
   const { data } = await axios.post('http://localhost/api/programadores/register', programador);
+  loading.value = false;
   router.push(`/programadores/${route.params.codigo}`);
 }
 

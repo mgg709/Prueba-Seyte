@@ -5,13 +5,14 @@
     <span>Buscador</span>
     <div class="search-bar">
        <input id="search" type="search" placeholder="Search..." class="searcher" v-model="busqueda"/>
-      <button @click="search">Buscar</button>
+      <NormalButton buttonLabel="Buscar" @click="search"></NormalButton>
       <label for="razon">Razón social</label>
       <input type="checkbox" id="razon" name="razon" checked v-model="razon">
       <label for="municipio">Municipio</label>
       <input type="checkbox" id="municipio" name="municipio" v-model="municipio">
     </div>
-    <table class="clients-table">
+    <Spinner v-if="loading"/>
+    <table class="clients-table" v-if="!loading">
       <thead>
         <tr>
           <th>Código</th>
@@ -40,8 +41,8 @@
         </tr>
       </tbody>
     </table>
-    <RouterLink to="/anadir/cliente"><NormalButton :buttonLabel="'Añadir cliente'"></NormalButton></RouterLink>
     <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/>
+    <RouterLink to="/anadir/cliente"><NormalButton :buttonLabel="'Añadir cliente'" class="btn-add-client"></NormalButton></RouterLink>
   </div>
 </template>
 <script setup>
@@ -50,6 +51,7 @@ import TablePaginated from '../components/TablePaginated.vue';
 import axios from 'axios';
 import { RouterLink } from 'vue-router';
 import NormalButton from '../components/NormalButton.vue';
+import Spinner from '../components/Spinner.vue';
 
 const clienteXpage = 10;
 const inicio = ref(0);
@@ -71,16 +73,17 @@ const previous = () => {
   fin.value -= clienteXpage;
 }
 
-async function getData(){
+async function getData() {
+  loading.value = true;
   const { data } = await axios.get('http://localhost/api/clientes'); 
   clientes.value = data;
+  loading.value = false;
 }
 
 async function deleteClient(cliente) {
-  console.log(cliente.codigo);
-  const { data } = await axios.delete(`http://localhost/api/clientes/delete/${cliente.codigo}`);
+  await axios.delete(`http://localhost/api/clientes/delete/${cliente.codigo}`);
   const index = this.clientes.indexOf(cliente);
-  clientes.value.splice( index ,1);
+  clientes.value.splice(index, 1);
 }
 
 watch(razon, (value) => {
@@ -95,6 +98,7 @@ watch(municipio, (value) => {
 });
 
 async function search() {
+  loading.value = true;
   if (razon.value === true && busqueda.value !== '') {
     console.log(razon.value)
     console.log(busqueda.value)
@@ -110,9 +114,8 @@ async function search() {
     const { data } = await axios.get('http://localhost/api/clientes'); 
     clientes.value = data;
   }
+  loading.value = false;
 }
-
-
 
 onMounted(getData);
 </script>
@@ -173,18 +176,8 @@ a{
 }
 
 .btn-add-client{
-  padding: 10px 20px;
-  border-radius: 20px;
-  border: none;
-  background-color: #009879;
-  color: white;
+  margin-top: 20px;
   margin-bottom: 20px;
-  transition: all 0.5s;
-}
-
-.btn-add-client:hover{
-  background-color: grey;
-  cursor: pointer;
 }
 
 .btn-delete-client{
@@ -208,6 +201,7 @@ a{
   border-radius: 5px;
   border: 1px solid #c8c8c8;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  margin-right: 10px;
 }
 
 .search-bar{
@@ -215,9 +209,15 @@ a{
   flex-direction: row;
   width: 100%;
   justify-content: center;
+  margin-top: 15px;
+}
+
+.search-bar button{
+  margin-right: 10px;
 }
 
 input[type="checkbox"]{
   width: 20px;
+  margin-right: 10px;
 } 
 </style>

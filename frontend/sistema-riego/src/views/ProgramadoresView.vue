@@ -6,9 +6,6 @@
         <NormalButton :buttonLabel="'Volver a inicio'"></NormalButton>
       </RouterLink>
     </div>
-
-
-    
     <form class="client-form">
       <label for="razon">Razón social</label>
       <input type="text" name="razon" id="" v-model="client.razon_social">
@@ -26,7 +23,7 @@
       <input type="date" name="fecha-fin" id="fecha-fin" v-model="client.fecha_expiracion">
     </form>
     <NormalButton :buttonLabel="'Guardar cambios'" @click="saveClient"></NormalButton>
-    <span>Filtrado por modelo</span>
+    <span class="filter-label">Filtrado por modelo</span>
     <div class="programadores-filters">
       <label for="a">Modelo A</label>
       <input type="checkbox" id="a" name="a" checked v-model="modeloA">
@@ -36,7 +33,7 @@
       <input type="checkbox" id="c" name="c" v-model="modeloC">
       <NormalButton :buttonLabel="'Filtrar'" @click="filter"></NormalButton>
     </div>
-    <table class="clients-table">
+    <table class="programadores-table" v-if="!loading">
       <thead>
         <tr>
           <th>Modelo</th>
@@ -56,6 +53,7 @@
         </tr>
       </tbody>
     </table>
+    <Spinner v-if="loading"/>
      <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/>
         <RouterLink :to="`/anadir/programador/` + route.params.codigo">
           <NormalButton :buttonLabel="'Añadir programador'" class="btn-add-programador"></NormalButton>
@@ -69,6 +67,7 @@ import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import NormalButton from '../components/NormalButton.vue';
 import { RouterLink } from 'vue-router';
+import Spinner from '../components/Spinner.vue';
 
 
 const client = ref({});
@@ -86,19 +85,24 @@ let maxLength = computed(() => programadores.value.length);
 const modeloA = ref(true);
 const modeloB = ref(false);
 const modeloC = ref(false);
+const loading = ref(false);
 
 onBeforeMount(() => {
   getClient();
 });
 
 async function saveClient() {
+  loading.value = true;
   const {data} = await axios.put(`http://localhost/api/clientes/update/${route.params.codigo}`, client.value);
   router.push('/');
+  loading.value = false;
 }
 
 async function getProgramadoresData() {
+  loading.value = true;
   const { data } = await axios.get(`http://localhost/api/programadores?codigo=${route.params.codigo}`);
   programadores.value = data;
+  loading.value = false;
 }
 
 const next = () => {
@@ -118,7 +122,7 @@ async function deleteProgramador(programador) {
 }
 
 async function filter() { 
-
+  loading.value = true;
   let api_request = 'http://localhost/api/programadores/filter'
 
   const queryParams = {};
@@ -138,6 +142,7 @@ async function filter() {
   url.search = new URLSearchParams(queryParams).toString();
   const { data } = await axios.get(url);
   programadores.value = data;
+  loading.value = false;
 }
 
 onMounted(() => {
@@ -163,6 +168,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   margin-left: 20px;
+  text-decoration: none;
 }
 
 .data{
@@ -172,7 +178,7 @@ onMounted(() => {
   align-items: center;
 }
 
-.clients-table{
+.programadores-table{
   width: 70%;
   border-collapse: collapse;
   margin: 25px 0;
@@ -181,26 +187,26 @@ onMounted(() => {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
-.clients-table thead tr {
+.programadores-table thead tr {
   background-color: #009879;
   color: #ffffff;
   text-align: left;
 }
 
-.clients-table th,
-.clients-table td {
+.programadores-table th,
+.programadores-table td {
   padding: 12px 15px;
 }
 
-.clients-table tbody tr {
+.programadores-table tbody tr {
   border-bottom: 1px solid #dddddd;
 }
 
-.clients-table tbody tr:nth-of-type(even) {
+.programadores-table tbody tr:nth-of-type(even) {
   background-color: #f3f3f3;
 }
 
-.clients-table tbody tr:last-of-type {
+.programadores-table tbody tr:last-of-type {
   border-bottom: 2px solid #009879;
 }
 a{
@@ -219,6 +225,7 @@ label{
 
 .btn-add-programador{
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .btn-delete-programador{
@@ -238,4 +245,8 @@ label{
 input[type="checkbox"]{
   width: 50px;
 } 
+
+.filter-label{
+  margin-top: 20px;
+}
 </style>

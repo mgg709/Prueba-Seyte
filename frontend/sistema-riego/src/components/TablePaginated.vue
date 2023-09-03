@@ -23,4 +23,27 @@ const props = defineProps({
 const emits = defineEmits(['previous', 'next'])
 
 </script>
-<style scoped></style>
+<style scoped>
+
+.left-button{
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: #2898ee;
+  color: white;
+  transition: all 0.5s;
+  margin-right: 20px;
+}
+.right-button{
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: #2898ee;
+  color: white;
+  transition: all 0.5s;
+}
+button:hover{
+  background-color: grey;
+  cursor: pointer;
+}
+</style>

@@ -33,7 +33,5 @@ Route::post('programadores/register', [ProgramadorController::class, 'register']
 Route::delete('programadores/delete/{numero_serie}', [ProgramadorController::class, 'destroy'])->name('programadores.delete');
 Route::put('programadores/update/{numero_serie}', [ProgramadorController::class, 'update'])->name('programadores.update');
 
-Route::get('sensores', [SensorController::class, 'index'])->name('sensores.index');
-Route::post('sensores/register', [SensorController::class, 'register'])->name('sensores.register');
-Route::delete('sensores/delete/{id}', [SensorController::class, 'delete'])->name('sensores.delete');
-Route::put('sensores/update/{id}', [SensorController::class, 'update'])->name('sensores.update');
+Route::get('sensores', [SensorController::class, 'indexByNumeroSerie'])->name('sensores.index');
+Route::post('sensores/medida', [SensorController::class, 'registerMedida'])->name('sensores.register');

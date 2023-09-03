@@ -17,6 +17,7 @@
       <label for="fecha-fin">Fecha de fin del contrato</label>
       <input type="date" name="fecha-fin" id="fecha-fin" v-model="fechaFin">
     </form>
+    <Spinner v-if="loading"/>
     <button @click="register" class="create-client">Crear cliente</button>
   </div>
 </template>
@@ -24,6 +25,7 @@
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import Spinner from '../components/Spinner.vue';
 
 const razon = ref('');
 const cif = ref('');
@@ -33,6 +35,7 @@ const provincia = ref('');
 const fechaInicio = ref('');
 const fechaFin = ref('');
 const router = useRouter();
+const loading = ref(false);
 
 let client = {
   razon_social: razon.value,
@@ -46,6 +49,7 @@ let client = {
 
 async function register() {
 
+  loading.value = true;
   client ={
   razon_social: razon.value,
   cif: cif.value,
@@ -56,8 +60,10 @@ async function register() {
   fecha_expiracion: fechaFin.value
 }
   console.log(client);
-  const { data } = await axios.post('http://localhost/api/clientes/register',client );
+  const { data } = await axios.post('http://localhost/api/clientes/register', client);
+  loading.value = false;
   router.push('/');
+
 }
 </script>
 <style>

@@ -21,6 +21,6 @@ class Sensor extends Model
 
   public function programador(): BelongsTo
   {
-    return $this->belongsTo(Programador::class, 'numero_serie');
+    return $this->belongsTo(Programador::class, 'programadores_numero_serie');
   }
 }

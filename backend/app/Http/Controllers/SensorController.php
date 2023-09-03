@@ -4,34 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Sensor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class SensorController extends Controller
 {
   //
-  public function index()
+  public function indexByNumeroSerie(Request $request)
   {
-    return Sensor::all();
+    return Sensor::where('programadores_numero_serie', $request->numero_serie)->get();
   }
 
-  public function register(Request $request)
+  public function registerMedida(Request $request)
   {
-    $sensor = Sensor::create($request->all());
+    $sensor = Sensor::create([
+      'sonda' => $request->sonda,
+      'fecha_medida' => Carbon::now()->format('Y-m-d H:i:s'),
+      'valor' => rand(0, 100),
+      'programadores_numero_serie' => $request->numero_serie
+    ]);
+
     return response()->json($sensor, 201);
-  }
-
-  public function update(Request $request, $id)
-  {
-    $sensor = Sensor::findOrFail($id);
-
-    $sensor->update($request);
-    return response()->json($sensor, 201);
-  }
-
-  public function destroy($id)
-  {
-
-    $sensor = Sensor::findOrFail($id);
-    $sensor->delete();
-    return response()->json('Eliminado con éxito', 201);
   }
 }
