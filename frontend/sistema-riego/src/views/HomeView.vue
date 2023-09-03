@@ -114,16 +114,12 @@ async function search() {
   loading.value = true;
   try {
     if (razon.value === true && busqueda.value !== '') {
-      console.log(razon.value)
-      console.log(busqueda.value)
       const { data } = await axios.get(`http://localhost/api/clientes/search?razon=${busqueda.value}`);
       clientes.value = data;
-      console.log(data);
+
     } else if (municipio.value === true && busqueda.value !== '') {
-      console.log('municipio')
       const { data } = await axios.get(`http://localhost/api/clientes/search?municipio=${busqueda.value}`);
       clientes.value = data;
-      console.log(data);
     } else {
       const { data } = await axios.get('http://localhost/api/clientes');
       clientes.value = data;
