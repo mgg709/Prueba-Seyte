@@ -42,6 +42,24 @@ const emits = defineEmits(['previous', 'next'])
   color: white;
   transition: all 0.5s;
 }
+
+.left-button:disabled{
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: rgba(40, 152, 238, 0.5);
+  color: white;
+  transition: all 0.5s;
+  margin-right: 20px;
+}
+.right-button:disabled{
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: rgba(40, 152, 238, 0.5);
+  color: white;
+  transition: all 0.5s;
+}
 button:hover{
   background-color: grey;
   cursor: pointer;
