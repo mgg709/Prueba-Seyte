@@ -74,6 +74,9 @@ async function register() {
     await axios.post('http://localhost/api/clientes/register', client);
     router.push('/');
   } catch (error) {
+    if (fechaInicio.value > fechaFin.value) {
+      messages.value.push('La fecha de inicio no puede ser mayor que la fecha de fin.');
+    }
     messages.value.push(error.response.data.message);
   } finally {
     loading.value = false;

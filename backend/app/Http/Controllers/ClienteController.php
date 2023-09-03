@@ -43,6 +43,9 @@ class ClienteController extends Controller
       'fecha_inicio' => 'required',
       'fecha_expiracion' => 'required'
     ]);
+    if ($request->fecha_inicio > $request->fecha_expiracion) {
+      return response()->json('La fecha de inicio no puede ser mayor que la fecha de expiración', 422);
+    }
     $client = Cliente::create($attributes);
     return response()->json($client, 201);
   }

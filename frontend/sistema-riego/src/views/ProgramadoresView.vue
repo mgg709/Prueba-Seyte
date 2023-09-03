@@ -6,7 +6,7 @@
         <NormalButton :buttonLabel="'Volver a inicio'"></NormalButton>
       </RouterLink>
     </div>
-    <form class="client-form">
+    <form class="client-form" v-if="!loading">
       <label for="razon">Razón social</label>
       <input type="text" name="razon" id="" v-model="client.razon_social">
       <label for="cif">CIF</label>
