@@ -42,6 +42,9 @@
       </tbody>
     </table>
     <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/>
+    <div  v-if="messages.length > 0" v-for="message in messages" class="messages">
+      <p>{{ message }}</p>
+    </div>
     <RouterLink to="/anadir/cliente"><NormalButton :buttonLabel="'Añadir cliente'" class="btn-add-client"></NormalButton></RouterLink>
   </div>
 </template>
@@ -62,6 +65,7 @@ const busqueda = ref('');
 const razon = ref(true);
 const municipio = ref(false);
 const loading = ref(false);
+const messages = ref([]);
 
 const next = () => {
   inicio.value += clienteXpage;
@@ -75,15 +79,24 @@ const previous = () => {
 
 async function getData() {
   loading.value = true;
-  const { data } = await axios.get('http://localhost/api/clientes'); 
-  clientes.value = data;
-  loading.value = false;
+  try {
+    const { data } = await axios.get('http://localhost/api/clientes');
+    clientes.value = data;
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  } finally {
+    loading.value = false;
+  }
 }
 
 async function deleteClient(cliente) {
-  await axios.delete(`http://localhost/api/clientes/delete/${cliente.codigo}`);
-  const index = this.clientes.indexOf(cliente);
-  clientes.value.splice(index, 1);
+  try{
+    await axios.delete(`http://localhost/api/clientes/delete/${cliente.codigo}`);
+    const index = this.clientes.indexOf(cliente);
+    clientes.value.splice(index, 1);
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  }
 }
 
 watch(razon, (value) => {
@@ -99,22 +112,27 @@ watch(municipio, (value) => {
 
 async function search() {
   loading.value = true;
-  if (razon.value === true && busqueda.value !== '') {
-    console.log(razon.value)
-    console.log(busqueda.value)
-    const { data } = await axios.get(`http://localhost/api/clientes/search?razon=${busqueda.value}`);
-    clientes.value = data;
-    console.log(data);
-  } else if (municipio.value === true && busqueda.value !== '') {
-    console.log('municipio')
-    const { data } = await axios.get(`http://localhost/api/clientes/search?municipio=${busqueda.value}`);
-    clientes.value = data;
-    console.log(data);
-  } else {
-    const { data } = await axios.get('http://localhost/api/clientes'); 
-    clientes.value = data;
+  try {
+    if (razon.value === true && busqueda.value !== '') {
+      console.log(razon.value)
+      console.log(busqueda.value)
+      const { data } = await axios.get(`http://localhost/api/clientes/search?razon=${busqueda.value}`);
+      clientes.value = data;
+      console.log(data);
+    } else if (municipio.value === true && busqueda.value !== '') {
+      console.log('municipio')
+      const { data } = await axios.get(`http://localhost/api/clientes/search?municipio=${busqueda.value}`);
+      clientes.value = data;
+      console.log(data);
+    } else {
+      const { data } = await axios.get('http://localhost/api/clientes');
+      clientes.value = data;
+    }
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 }
 
 onMounted(getData);
@@ -220,4 +238,8 @@ input[type="checkbox"]{
   width: 20px;
   margin-right: 10px;
 } 
+
+ .messages p{
+    color: red;
+  }
 </style>

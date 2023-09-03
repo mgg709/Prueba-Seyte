@@ -1,6 +1,11 @@
 <template>
   <div class="form-add-client">
-    <h1>Añadir Cliente</h1>
+    <div class="header-add-clientes">
+      <h1>Añadir cliente</h1>
+      <RouterLink to="/">
+        <NormalButton :buttonLabel="'Volver a inicio'"></NormalButton>
+      </RouterLink>
+    </div>
     <form action="POST" class="client-form">
       <label for="razon">Razón social</label>
       <input type="text" name="razon" id="razon" v-model="razon">
@@ -18,7 +23,10 @@
       <input type="date" name="fecha-fin" id="fecha-fin" v-model="fechaFin">
     </form>
     <Spinner v-if="loading"/>
-    <button @click="register" class="create-client">Crear cliente</button>
+    <div  v-if="messages.length > 0" v-for="message in messages" class="messages">
+      <p>{{ message }}</p>
+    </div>
+    <NormalButton buttonLabel="Crear cliente" @click="register" class="create-client"></NormalButton>
   </div>
 </template>
 <script setup>
@@ -26,6 +34,7 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Spinner from '../components/Spinner.vue';
+import NormalButton from '../components/NormalButton.vue';
 
 const razon = ref('');
 const cif = ref('');
@@ -36,6 +45,7 @@ const fechaInicio = ref('');
 const fechaFin = ref('');
 const router = useRouter();
 const loading = ref(false);
+const messages = ref([]);
 
 let client = {
   razon_social: razon.value,
@@ -59,14 +69,33 @@ async function register() {
   fecha_inicio: fechaInicio.value,
   fecha_expiracion: fechaFin.value
 }
-  console.log(client);
-  const { data } = await axios.post('http://localhost/api/clientes/register', client);
-  loading.value = false;
-  router.push('/');
+
+  try {
+    await axios.post('http://localhost/api/clientes/register', client);
+    router.push('/');
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  } finally {
+    loading.value = false;
+  }
 
 }
 </script>
-<style>
+<style scoped>
+
+.header-add-clientes{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-add-clientes a{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px;
+  text-decoration: none;
+}
   .form-add-client{
     display: flex;
     flex-direction: column;
@@ -76,9 +105,12 @@ async function register() {
 
   .client-form{
     display: flex;
+    flex-direction: column;
     align-items: center;
     flex-direction: column;
   }
+
+ 
 
   .create-client{
     padding: 10px 20px;
@@ -99,5 +131,9 @@ async function register() {
   input{
     padding: 5px 20px;
     width: 15vw;
+  }
+
+  .messages p{
+    color: red;
   }
 </style>

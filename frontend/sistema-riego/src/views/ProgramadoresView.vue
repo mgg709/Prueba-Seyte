@@ -55,6 +55,9 @@
     </table>
     <Spinner v-if="loading"/>
      <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/>
+      <div  v-if="messages.length > 0" v-for="message in messages" class="messages">
+        <p>{{ message }}</p>
+      </div>
         <RouterLink :to="`/anadir/programador/` + route.params.codigo">
           <NormalButton :buttonLabel="'Añadir programador'" class="btn-add-programador"></NormalButton>
         </RouterLink>
@@ -86,23 +89,31 @@ const modeloA = ref(true);
 const modeloB = ref(false);
 const modeloC = ref(false);
 const loading = ref(false);
+const messages = ref([]);
 
-onBeforeMount(() => {
-  getClient();
-});
 
 async function saveClient() {
   loading.value = true;
-  const {data} = await axios.put(`http://localhost/api/clientes/update/${route.params.codigo}`, client.value);
-  router.push('/');
-  loading.value = false;
+  try {
+    const { data } = await axios.put(`http://localhost/api/clientes/update/${route.params.codigo}`, client.value);
+    router.push('/');
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  } finally {
+    loading.value = false;
+  }
 }
 
 async function getProgramadoresData() {
   loading.value = true;
-  const { data } = await axios.get(`http://localhost/api/programadores?codigo=${route.params.codigo}`);
-  programadores.value = data;
-  loading.value = false;
+  try {
+    const { data } = await axios.get(`http://localhost/api/programadores?codigo=${route.params.codigo}`);
+    programadores.value = data;
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  }finally {
+    loading.value = false;
+  }
 }
 
 const next = () => {
@@ -116,9 +127,13 @@ const previous = () => {
 }
 
 async function deleteProgramador(programador) {
-  const { data } = await axios.delete(`http://localhost/api/programadores/delete/${programador.numero_serie}`);
-  const index = this.programadores.indexOf(programador);
-  programadores.value.splice( index ,1);
+  try {
+    await axios.delete(`http://localhost/api/programadores/delete/${programador.numero_serie}`);
+    const index = this.programadores.indexOf(programador);
+    programadores.value.splice(index, 1);
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  }
 }
 
 async function filter() { 
@@ -127,23 +142,30 @@ async function filter() {
 
   const queryParams = {};
   queryParams.codigo = route.params.codigo;
+  try {
+    if (modeloA.value === true) {
+      queryParams.modeloA = 'A';
+    }
+    if (modeloB.value === true) {
+      queryParams.modeloB = 'B';
+    }
+    if (modeloC.value === true) {
+      queryParams.modeloC = 'C';
+    }
 
-  if (modeloA.value === true) {
-    queryParams.modeloA = 'A';
+    const url = new URL(api_request);
+    url.search = new URLSearchParams(queryParams).toString();
+    const { data } = await axios.get(url);
+    programadores.value = data;
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  } finally {
+    loading.value = false;
   }
-  if (modeloB.value === true) {
-    queryParams.modeloB = 'B';
-  }
-  if (modeloC.value === true) {
-    queryParams.modeloC = 'C';
-  }
-
-  const url = new URL(api_request);
-  url.search = new URLSearchParams(queryParams).toString();
-  const { data } = await axios.get(url);
-  programadores.value = data;
-  loading.value = false;
 }
+onBeforeMount(() => {
+  getClient();
+});
 
 onMounted(() => {
   getProgramadoresData();
@@ -171,6 +193,12 @@ onMounted(() => {
   text-decoration: none;
 }
 
+ .client-form{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  
 .data{
   display: flex;
   flex-direction: column;
@@ -249,4 +277,8 @@ input[type="checkbox"]{
 .filter-label{
   margin-top: 20px;
 }
+
+.messages p{
+    color: red;
+  }
 </style>

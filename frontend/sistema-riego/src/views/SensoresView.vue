@@ -30,6 +30,9 @@
     </table>
     <Spinner v-if="loading"/>
     <TablePaginated @next="next" @previous="previous" :inicio="inicio" :fin="fin" :longitud="maxLength"/>
+    <div  v-if="messages.length > 0" v-for="message in messages" class="messages">
+        <p>{{ message }}</p>
+      </div>
   </div>
 </template>
 <script setup>
@@ -47,6 +50,7 @@ const inicio = ref(0);
 const fin = ref(10);
 const sensoresXpage = 10;
 let maxLength = computed(() => sensores.value.length);
+const messages = ref([]);
 
 
 const next = () => {
@@ -61,18 +65,27 @@ const previous = () => {
 
 async function tomarMedida(sonda) {
   loading.value = true;
-  const { data } = await axios.post(`http://localhost/api/sensores/medida?numero_serie=${route.params.numero_serie}&sonda=${sonda}`);
-  sensores.value.push(data);
-  console.log(data);
-  loading.value = false;
+  try {
+    const { data } = await axios.post(`http://localhost/api/sensores/medida?numero_serie=${route.params.numero_serie}&sonda=${sonda}`);
+    sensores.value.push(data);
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  }finally{
+    loading.value = false;
+  }
 }
 
 
 async function getSensores() {
   loading.value = true;
-  const { data } = await axios.get(`http://localhost/api/sensores?numero_serie=${route.params.numero_serie}`);
-  sensores.value = data;
-  loading.value = false;
+  try {
+    const { data } = await axios.get(`http://localhost/api/sensores?numero_serie=${route.params.numero_serie}`);
+    sensores.value = data;
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  } finally {
+    loading.value = false;
+  }
 }
 
 onMounted(() => {
@@ -136,4 +149,8 @@ onMounted(() => {
 .btns-medidas button{
   margin-right: 20px;
 }
+
+.messages p{
+    color: red;
+  }
 </style>

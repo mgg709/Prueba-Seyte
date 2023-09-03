@@ -1,6 +1,11 @@
 <template>
   <div class="form-add-programador">
-    <h1>Añadir Programador</h1>
+    <div class="header-add-programadores">
+      <h1>Añadir programador</h1>
+      <RouterLink to="/">
+        <NormalButton :buttonLabel="'Volver a inicio'"></NormalButton>
+      </RouterLink>
+    </div>
     <form action="POST" class="programador-form">
       <label for="modelo">Modelo</label>
       <select name="modelo" id="modelo" v-model="model">
@@ -14,6 +19,9 @@
       <input type="date" name="fecha-alta" id="fecha-alta" v-model="fecha_alta">
     </form>
     <Spinner v-if="loading"/>
+    <div  v-if="messages.length > 0" v-for="message in messages" class="messages">
+      <p>{{ message }}</p>
+    </div>
     <NormalButton class="btn-programador-form" :buttonLabel="'Añadir programador'" @click="registerProgramador"></NormalButton>
   </div>
 </template>
@@ -35,6 +43,7 @@ const hora = fecha_conexion.getHours().toString();
 const minutos = fecha_conexion.getMinutes().toString();
 const segundos = fecha_conexion.getSeconds().toString();
 const loading = ref(false);
+const messages = ref([]);
 
 let fecha_ultima_conexion = ano + '-' + mes + '-' + dia + ' ' + hora + ':' + minutos + ':' + segundos;
 
@@ -57,13 +66,32 @@ async function registerProgramador() {
     fecha_ultima_conexion: fecha_ultima_conexion,
     clientes_codigo: route.params.codigo
   }
-  const { data } = await axios.post('http://localhost/api/programadores/register', programador);
-  loading.value = false;
-  router.push(`/programadores/${route.params.codigo}`);
+  try {
+    const { data } = await axios.post('http://localhost/api/programadores/register', programador);
+    router.push(`/programadores/${route.params.codigo}`);
+  }catch(error){
+    messages.value.push(error.response.data.message);
+  } finally {
+    loading.value = false;
+  }
 }
 
 </script>
 <style scoped>
+
+.header-add-programadores{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-add-programadores a{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20px;
+  text-decoration: none;
+}
 .form-add-programador{
     display: flex;
     flex-direction: column;
@@ -80,4 +108,17 @@ async function registerProgramador() {
 .btn-programador-form{
   margin-top: 20px;
 }
+
+.messages{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .messages p{
+    color: red;
+  }
+ .messages p{
+    color: red;
+  }
 </style>
