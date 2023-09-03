@@ -27,7 +27,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="cliente in clientes.slice(inicio, fin)" :key="cliente.codigo">
+        <tr v-for="cliente in clientes.slice(inicio,fin)" :key="cliente.codigo">
           
           <td><RouterLink :to="`/programadores/${cliente.codigo}`">{{ cliente.codigo }}</RouterLink></td>
           <td>{{ cliente.razon_social }}</td>
@@ -60,28 +60,47 @@ const clienteXpage = 10;
 const inicio = ref(0);
 const fin = ref(clienteXpage);
 const clientes = ref([]);
-let maxLength = computed(() => clientes.value.length);
+const maxLength = ref(0);
 const busqueda = ref('');
 const razon = ref(true);
 const municipio = ref(false);
 const loading = ref(false);
 const messages = ref([]);
+const currentPage = ref(1);
+const lastPage = ref(1);
 
-const next = () => {
+const next = async() => {
   inicio.value += clienteXpage;
   fin.value += clienteXpage;
+  currentPage.value += 1;
+  loading.value = true;
+  try {
+    if (currentPage.value > lastPage.value) {
+      const { data } = await axios.get(`http://localhost/api/clientes?page=${currentPage.value}`);
+      data.clientes.data.map((cliente) => {
+        clientes.value.push(cliente);
+      });
+      lastPage.value += 1;
+    }
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  } finally {
+    loading.value = false;
+  }
 }
 
 const previous = () => {
   inicio.value -= clienteXpage;
   fin.value -= clienteXpage;
+  currentPage.value -= 1;
 }
 
 async function getData() {
   loading.value = true;
   try {
-    const { data } = await axios.get('http://localhost/api/clientes');
-    clientes.value = data;
+    const { data } = await axios.get('http://localhost/api/clientes?page=1');
+    clientes.value = data.clientes.data;
+    maxLength.value = data.totalClientes;
   } catch (error) {
     messages.value.push(error.response.data.message);
   } finally {

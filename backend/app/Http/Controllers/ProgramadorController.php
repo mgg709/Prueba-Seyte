@@ -14,7 +14,9 @@ class ProgramadorController extends Controller
   public function index(Request $request)
   {
     $codigo = $request->codigo;
-    return Programador::where('clientes_codigo', $codigo)->get();
+    $programadores = Programador::where('clientes_codigo', $codigo)->paginate(10);
+    $totalProgramadores = Programador::where('clientes_codigo', $codigo)->count();
+    return response()->json(['programadores' => $programadores, 'totalProgramadores' => $totalProgramadores], 201);
   }
 
   public function indexByFilter(Request $request)

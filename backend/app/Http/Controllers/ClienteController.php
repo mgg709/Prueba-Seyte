@@ -11,11 +11,13 @@ class ClienteController extends Controller
 {
   //
 
-  public function index()
+  public function index(Request $request)
   {
-    return Cliente::all();
+    $clientes =  Cliente::paginate(10);
+    $totalClientes = Cliente::count();
+    return response()->json(['clientes' => $clientes, 'totalClientes' => $totalClientes], 201);
   }
-  //TODO: Bug en el que si buscas con el campo vacio, te peta
+
   public function indexBySearch(Request $request)
   {
     if ($request->razon) {

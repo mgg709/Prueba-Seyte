@@ -38,9 +38,10 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import NormalButton from '../components/NormalButton.vue';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import Spinner from '../components/Spinner.vue';
+import TablePaginated from '../components/TablePaginated.vue';
 
 
 const route = useRoute();
@@ -49,18 +50,38 @@ const loading = ref(false);
 const inicio = ref(0);
 const fin = ref(10);
 const sensoresXpage = 10;
-let maxLength = computed(() => sensores.value.length);
+const maxLength = ref(0);
 const messages = ref([]);
+const currentSensoresPage = ref(1);
+const lastSensoresPage = ref(1);
 
 
-const next = () => {
+const next = async() => {
   inicio.value += sensoresXpage;
   fin.value += sensoresXpage;
+  currentSensoresPage.value += 1;
+  loading.value = true;
+  console.log(currentSensoresPage.value);
+  try {
+    if (currentSensoresPage.value > lastSensoresPage.value) {
+      const { data } = await axios.get(`http://localhost/api/sensores?numero_serie=${route.params.numero_serie}&page=${currentSensoresPage.value}`);
+      data.sensores.data.map((sensor) => {
+        sensores.value.push(sensor);
+      });
+      lastSensoresPage.value += 1;
+    }
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  } finally {
+    
+    loading.value = false;
+  }
 }
 
 const previous = () => {
   inicio.value -= sensoresXpage;
   fin.value -= sensoresXpage;
+  currentSensoresPage.value -= 1;
 }
 
 async function tomarMedida(sonda) {
@@ -79,8 +100,9 @@ async function tomarMedida(sonda) {
 async function getSensores() {
   loading.value = true;
   try {
-    const { data } = await axios.get(`http://localhost/api/sensores?numero_serie=${route.params.numero_serie}`);
-    sensores.value = data;
+    const { data } = await axios.get(`http://localhost/api/sensores?numero_serie=${route.params.numero_serie}&page=1`);
+    sensores.value = data.sensores.data;
+    maxLength.value = data.totalSensores;
   } catch (error) {
     messages.value.push(error.response.data.message);
   } finally {

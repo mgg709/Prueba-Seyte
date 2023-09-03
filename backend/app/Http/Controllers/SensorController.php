@@ -11,7 +11,9 @@ class SensorController extends Controller
   //
   public function indexByNumeroSerie(Request $request)
   {
-    return Sensor::where('programadores_numero_serie', $request->numero_serie)->get();
+    $sensores = Sensor::where('programadores_numero_serie', $request->numero_serie)->paginate(10);
+    $totalSensores = Sensor::where('programadores_numero_serie', $request->numero_serie)->count();
+    return response()->json(['sensores' => $sensores, 'totalSensores' => $totalSensores], 201);
   }
 
   public function registerMedida(Request $request)

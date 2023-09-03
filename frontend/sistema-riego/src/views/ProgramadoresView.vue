@@ -76,21 +76,23 @@ import Spinner from '../components/Spinner.vue';
 const client = ref({});
 const route = useRoute();
 const router = useRouter();
-async function getClient(){
-  const {data} = await axios.get(`http://localhost/api/clientes/${route.params.codigo}`);
-  client.value = data[0];
-}
 const programadores = ref([]);
 const inicio = ref(0);
 const fin = ref(10);
 const programadoresXpage = 10;
-let maxLength = computed(() => programadores.value.length);
+const maxLength = ref(0);
 const modeloA = ref(true);
 const modeloB = ref(false);
 const modeloC = ref(false);
 const loading = ref(false);
 const messages = ref([]);
+const currentProgramadoresPage = ref(1);
+const lastProgramadoresPage = ref(1);
 
+async function getClient(){
+  const {data} = await axios.get(`http://localhost/api/clientes/${route.params.codigo}`);
+  client.value = data[0];
+}
 
 async function saveClient() {
   loading.value = true;
@@ -107,8 +109,9 @@ async function saveClient() {
 async function getProgramadoresData() {
   loading.value = true;
   try {
-    const { data } = await axios.get(`http://localhost/api/programadores?codigo=${route.params.codigo}`);
-    programadores.value = data;
+    const { data } = await axios.get(`http://localhost/api/programadores?codigo=${route.params.codigo}&page=1`);
+    programadores.value = data.programadores.data;
+    maxLength.value = data.totalProgramadores;
   } catch (error) {
     messages.value.push(error.response.data.message);
   }finally {
@@ -116,14 +119,30 @@ async function getProgramadoresData() {
   }
 }
 
-const next = () => {
+const next = async() => {
   inicio.value += programadoresXpage;
   fin.value += programadoresXpage;
+  currentProgramadoresPage.value += 1;
+  loading.value = true;
+  try {
+    if (currentProgramadoresPage.value > lastProgramadoresPage.value) {
+      const { data } = await axios.get(`http://localhost/api/programadores?codigo=${route.params.codigo}&page=${currentProgramadoresPage.value}`);
+      data.programadores.data.map((programador) => {
+        programadores.value.push(programador);
+      });
+      lastProgramadoresPage.value += 1;
+    }
+  } catch (error) {
+    messages.value.push(error.response.data.message);
+  } finally {
+    loading.value = false;
+  }
 }
 
 const previous = () => {
   inicio.value -= programadoresXpage;
   fin.value -= programadoresXpage;
+  currentProgramadoresPage.value -= 1;
 }
 
 async function deleteProgramador(programador) {
