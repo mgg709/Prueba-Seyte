@@ -91,7 +91,6 @@ async function getSensores() {
 onMounted(() => {
   getSensores();
 });
-// @ts-ignore
 </script>
 <style scoped>
 .sensores-content{
