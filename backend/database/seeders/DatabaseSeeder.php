@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
   {
     $faker = Faker::create();
     $currentDateTime = Carbon::now();
-
+    $numero_serie = 0;
     for ($i = 0; $i < 1000; $i++) {
       $cliente = Cliente::create([
         'razon_social' => $faker->company,
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
 
       for ($j = 0; $j < 30; $j++) {
 
-        $numero_serie = 0;
+
         $programador = Programador::create([
           'numero_serie' => $numero_serie,
           'modelo' => $faker->randomElement(['A', 'B', 'C']),
