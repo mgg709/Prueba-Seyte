@@ -61,7 +61,8 @@ class ProgramadorController extends Controller
   public function destroy($numero_serie)
   {
     $programador = Programador::findOrFail($numero_serie);
-    // $programador->sensores()->detach();
+    $sensores_numero_serie = $programador->sensores()->pluck('programadores_numero_serie');
+    Sensor::whereIn('programadores_numero_serie', $sensores_numero_serie)->delete();
     $programador->delete();
     return response()->json('Eliminado con éxito', 201);
   }
